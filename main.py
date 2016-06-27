@@ -1,30 +1,48 @@
-import sys
-import monitor
-import time
-from threading import Thread, Timer
+from sys import exit
+from time import time
+from collect import Collect
+from monitor import MonitorTweets
+from monitor import MonitorUsers
+from threading import Thread
+from threading import Timer
+from json import load
 
 if __name__ == "__main__":
 
-    tweets = monitor.Monitor()
-    users = monitor.Users()
-    seconds = lambda hours : hours * 60 * 60
-    U = seconds(hours=6) # update users every (seconds)
-    R = seconds(hours=120) # restart stream every (seconds)
+    try:
+        # get users from twitter lists
+        lists = load(open("lists.json"))
+        collect = Collect(lists=lists)
+        collect.store()
 
-    # start stream
-    Thread(target=tweets.start).start()
+        # hours to seconds
+        seconds = lambda hours: hours * 60 * 60
 
-    update = time.time() + U
-    restart = time.time() + R
+        mt = MonitorTweets()
+        mu = MonitorUsers()
+        U = seconds(hours=6)   # update users every (seconds)
+        R = seconds(hours=24)  # restart stream every (seconds)
 
-    while True:
+        # start stream
+        Thread(target=mt.start).start()
 
-        if update - time.time() <= 0:
-            # update users
-            update = time.time() + U
-            Thread(target=users.update).start()
+        update = time() + U
+        restart = time() + R
 
-        if restart - time.time() <= 0:
-            # restart stream
-            restart = time.time() + R
-            Thread(target=tweets.restart).start()
+        while True:
+
+            if update - time() <= 0:
+                # update users
+                update = time() + U
+                Thread(target=mu.update).start()
+
+            if restart - time() <= 0:
+                # restart stream
+                restart = time() + R
+                Thread(target=mt.restart).start()
+
+    except KeyboardInterrupt as e:
+        # exit gracefully
+        print()
+        mt.stop()
+        exit()

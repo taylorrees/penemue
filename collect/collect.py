@@ -1,121 +1,62 @@
-import json
-import time
-import credentials as c
+from credentials import app_key
+from credentials import app_secret
+from credentials import auth_token
+from credentials import auth_secret
 from twython import Twython
+from limiter import limiter
+from .filter import remove_duplicate_users
+from .filter import refine
+from db import DB
 
 
 class Collect(object):
-    """
-    A small class for collecting and storing a list of
-    Twitter user profiles retrieved from specific Twitter lists.
-    The Twitter lists can be specified using URLs of the
-    lists, from which the necessary arguments will be extracted.
-    Such arguments would be the list slug and user screen name.
-    """
+    """Get, merge and filter the members of the provided Twitter lists."""
 
     def __init__(self, lists):
         """
-        Where the list of Twitter list URLs should be specified.
-
-        @constructor
-        @param {Str} url
+        :param lists: a python list of twitter list urls
         """
 
-        # remove duplicates
-        urls = list(set(lists))
-
-        self.twitter = Twython(c.app_key, c.app_secret,
-                               c.auth_token, c.auth_secret)
-        self.urls = []
-        self.members = []
+        urls = list(set(lists)) # remove duplicates
         stopwords = ["", "https:", "twitter.com"]
+        cr = [app_key, app_secret, auth_token, auth_secret]
+
+        self.twitter = Twython(*cr)
+        self.urls = []
 
         for url in urls:
-            self.urls.append({
-                "url": url,
-                "args": [level for level in url.split("/") if level not in stopwords]
-            })
+            args = [arg for arg in url.split("/") if arg not in stopwords]
+            self.urls.append({"url": url, "args": args})
 
-    def rate_limit(self):
-        """
-        A far too simple rate limiter, to try and prevent the
-        number of requests exceeding the API limit.
-        """
+        self.members = self.__members()
 
-        req = 12
-        per = 60
+    def __members(self):
+        """Get and merge all members of the provided Twitter lists."""
 
-        # Needs improvement
-        print('.')
-        wait = 1 / (req / per)
-        time.sleep(wait)
-
-    def remove_duplicate_members(self):
-        """
-        Remove duplicated user profiles from the list of
-        members.
-        """
-
-        ids = set()
-        filtered = []
-        duplicates = 0
-
-        for user in self.members:
-            if user["id_str"] not in ids:
-                ids.add(user["id_str"])
-                filtered.append(user)
-
-        self.members = filtered
-
-        duplicates = len(self.members) - len(filtered)
-        print("Duplicates removed: %s" % duplicates)
-
-    def get_members(self):
-        """
-        Creates a list of Twitter user profiles who are members of
-        the specified lists.
-
-        See: https://dev.twitter.com/rest/reference/get/lists/members
-
-        @return {list of strings}
-        """
+        print("Collecting...")
+        users = []
 
         for url in self.urls:
-            twitter_list = self.twitter.get_list_members(
-                slug=url["args"][2], owner_screen_name=url["args"][0], count=5000)
-            # sleep after request
-            self.rate_limit()
-            users = [member for member in twitter_list["users"]]
-            self.members += users
+            slug = url["args"][2]
+            owner = url["args"][0]
+            args = {"slug": slug, "owner_screen_name": owner, "count": 5000}
+            members = self.__list_members(**args)
+            users += [member for member in members["users"]]
 
-        self.remove_duplicate_members()
+        # filter users
+        users = remove_duplicate_users(users)
+        users = refine(users)
 
-        print("Users: %s" % len(self.members))
-        return self.members
+        return users
 
-    def to_json_file(self, path):
-        """
-        Stores the users in a JSON file specified by the path
-        parameter.
+    @limiter("lists/members")
+    def __list_members(self, *args, **kwargs):
+        """Twython method wrapper, to envoke rate limiter."""
 
-        @param {string} path
-        """
+        return self.twitter.get_list_members(**kwargs)
 
-        with open(path, "w") as outfile:
-            json.dump(self.get_members(), outfile)
-            outfile.close()
+    def store(self):
+        """Store the users from the lists to the database."""
 
-
-if __name__ == "__main__":
-    start = time.time()
-
-    print("Starting...")
-
-    with open("../json/twitter_lists.json") as infile:
-        lists = json.load(infile)
-        collector = Collect(lists)
-        collector.to_json_file("../json/twitter_profiles.json")
-        infile.close()
-
-    print("Finished")
-    print("Duration: %.2fs" % (time.time() - start))
+        DB.users.remove({})
+        DB.users.insert_many(self.members)

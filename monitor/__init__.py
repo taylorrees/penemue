@@ -1,5 +1,2 @@
-from . import monitor
-from . import users
-
-Monitor = monitor.Monitor
-Users = users.Users
+from .monitor_tweets import MonitorTweets
+from .monitor_users import MonitorUsers
