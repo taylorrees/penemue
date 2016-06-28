@@ -1,4 +1,4 @@
-![http://cardiff.ac.uk](https://upload.wikimedia.org/wikipedia/en/b/b1/Cardiff_university_logo.png)
+[![Cardiff University Logo ](https://upload.wikimedia.org/wikipedia/en/b/b1/Cardiff_university_logo.png)](http://cardiff.ac.uk)
 
 ## Media Monitor
 
