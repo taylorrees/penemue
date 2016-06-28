@@ -18,8 +18,9 @@ def limiter(request):
     def decorator(f):
         def wrapper(*args, **kwargs):
             """
-            A small decorator function to provide Twitter API rate
-            limiting. A request is made to the API to get the number
+            A decorator function to provide Twitter API rate limiting. 
+
+            A request is made to the API to get the number
             of remaining requests. If no requests remain then the
             current thread must wait until the specified reset time.
 
