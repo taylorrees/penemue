@@ -16,6 +16,7 @@ class MonitorUsers(object):
         self.users = [user for user in DB.users.find()]
 
     def __archive(self):
+        """Archive all current users."""
         # archive current users
         DB.archive.insert({
             "timestamp": time(),
@@ -24,11 +25,13 @@ class MonitorUsers(object):
         })
 
     def __store(self):
+        """Store the users to the database."""
         # overwite existing users
         DB.users.remove({})
         DB.users.insert_many(self.users)
 
     def __collect(self):
+        """Make calls to twitter api to collect profiles."""
         # collect profiles of all users
         user_ids = [user["id_str"] for user in self.users]
         updated = []
@@ -41,10 +44,13 @@ class MonitorUsers(object):
 
     @limiter("users/lookup")
     def lookup(self, user_id):
+        """Twitter api wrapper to enforce rate limit."""
         # rate limited
         return self.twitter.lookup_user(user_id=user_id)
 
     def update(self):
+        """Update existing user profiles."""
+
         print("Update Users")
         print("\t 1. Archiving")
         self.__archive()
