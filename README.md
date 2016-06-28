@@ -6,7 +6,7 @@ Part of a joint research project between the [School of Computer Science](https:
 
 ---
 
-## Getting Started
+### Getting Started
 
 To get started you'll need the following packages
 - `twython`
