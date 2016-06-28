@@ -2,7 +2,7 @@
 
 ## Media Monitor
 
-_Part of a joint research project between the [School of Computer Science](https://www.cs.cf.ac.uk/) and the [School of Journalism](http://www.cardiff.ac.uk/journalism-media-cultural-studies) at Cardiff University. The tool will be used to conduct an analysis of journalism conversation on social media._
+Part of a joint research project between the [School of Computer Science](https://www.cs.cf.ac.uk/) and the [School of Journalism](http://www.cardiff.ac.uk/journalism-media-cultural-studies) at Cardiff University. The tool will be used to conduct an analysis of journalism conversation on social media.
 
 ---
 
