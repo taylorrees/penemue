@@ -10,18 +10,19 @@ from json import load
 if __name__ == "__main__":
 
     try:
-        # get users from twitter lists
-        lists = load(open("lists.json"))
-        collect = Collect(lists=lists)
-        collect.store()
 
         # hours to seconds
         seconds = lambda hours: hours * 60 * 60
-
+        
         mt = MonitorTweets()
         mu = MonitorUsers()
         U = seconds(hours=6)   # update users every (seconds)
         R = seconds(hours=24)  # restart stream every (seconds)
+
+        # get users from twitter lists
+        lists = load(open("lists.json"))
+        collect = Collect(lists=lists)
+        collect.store()
 
         # start stream
         Thread(target=mt.start).start()
