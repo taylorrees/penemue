@@ -13,15 +13,20 @@ if __name__ == "__main__":
 
         # hours to seconds
         seconds = lambda hours: hours * 60 * 60
-        
+
         mt = MonitorTweets()
         mu = MonitorUsers()
         U = seconds(hours=6)   # update users every (seconds)
         R = seconds(hours=24)  # restart stream every (seconds)
 
-        # get users from twitter lists
-        lists = load(open("lists.json"))
-        collect = Collect(lists=lists)
+        # get journalists from twitter lists
+        journalists = load(open("journalists.json"))
+        collect = Collect(lists=journalists)
+        collect.store()
+
+        # get news organisations from twitter lists
+        organisations = load(open("organisations.json"))
+        collect = Collect(lists=organisations, refine=False, append=True)
         collect.store()
 
         # start stream

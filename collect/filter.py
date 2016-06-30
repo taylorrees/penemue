@@ -100,7 +100,6 @@ def refine(users):
         if user_has_keyword(user) and user_is_public(user) and user_is_active(user):
             filtered.append(user)
 
-    print("Users: %s" % len(users))
     print("Filtered: %s" % len(filtered))
 
     return filtered

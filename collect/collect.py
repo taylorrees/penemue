@@ -12,7 +12,7 @@ from db import DB
 class Collect(object):
     """Get, merge and filter the members of the provided Twitter lists."""
 
-    def __init__(self, lists):
+    def __init__(self, lists, refine=True, append=False):
         """
         :param lists: a python list of twitter list urls
         """
@@ -21,6 +21,8 @@ class Collect(object):
         stopwords = ["", "https:", "twitter.com"]
         cr = [app_key, app_secret, auth_token, auth_secret]
 
+        self.refine = refine
+        self.append = append
         self.twitter = Twython(*cr)
         self.urls = []
 
@@ -44,9 +46,11 @@ class Collect(object):
             users += [member for member in members["users"]]
 
         # filter users
-        users = remove_duplicate_users(users)
-        users = refine(users)
+        if self.refine:
+            users = remove_duplicate_users(users)
+            users = refine(users)
 
+        print("Users: %s" % len(users))
         return users
 
     @limiter("lists/members")
@@ -58,5 +62,8 @@ class Collect(object):
     def store(self):
         """Store the users from the lists to the database."""
 
-        DB.users.remove({})
+        if not self.append:
+            # remove existing users
+            DB.users.remove({})
+
         DB.users.insert_many(self.members)
