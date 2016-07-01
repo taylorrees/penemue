@@ -3,6 +3,7 @@ from credentials import app_secret
 from credentials import auth_token
 from credentials import auth_secret
 from twython import TwythonStreamer
+from time import sleep
 from db import DB
 
 
@@ -17,6 +18,12 @@ class Stream(TwythonStreamer):
     def on_error(self, status_code, data):
         """Handle streaming error."""
         print(status_code)
+        return True
+
+    def on_timeout(self):
+        """Handle request timeout."""
+        print("Timeout...")
+        return True
 
 
 class MonitorTweets(object):
@@ -33,10 +40,25 @@ class MonitorTweets(object):
         users = [user["id_str"] for user in users]
         users = ",".join(users)
 
-        # start stream
         print("Starting stream...")
         args = {"follow": users, "language": "en"}
-        self.stream.statuses.filter(**args)
+
+        while True:
+            try:
+                # start stream
+                self.stream.statuses.filter(**args)
+
+            except:
+                # catch exceptions and restart
+                self.stop()
+                print("Restarting stream...")
+                sleep(5) # wait
+                continue
+
+            else:
+                # end if requested
+                print("Breaking...")
+                break
 
     def stop(self):
         """Stop the twitter stream."""
