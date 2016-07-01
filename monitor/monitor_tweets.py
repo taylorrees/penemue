@@ -56,10 +56,10 @@ class MonitorTweets(object):
                     sleep(e.retry_after)
                     continue
 
-            except TwythonError as e:
+            except Exception as e:
                 # catch exceptions and restart
                 self.stop()
-                print("[Twython Exception] \n%s" % e)
+                print("[Exception] \n%s" % e)
                 print("Restarting stream...")
                 sleep(60) # wait
                 continue
