@@ -3,6 +3,9 @@ from credentials import app_secret
 from credentials import auth_token
 from credentials import auth_secret
 from twython import TwythonStreamer
+from twython import TwythonError
+from twython import TwythonRateLimitError
+from twython import TwythonAuthError
 from time import sleep
 from db import DB
 
@@ -48,11 +51,17 @@ class MonitorTweets(object):
                 # start stream
                 self.stream.statuses.filter(**args)
 
-            except:
+            except TwythonRateLimitError as e:
+                    print("[Twython Exception] Rate Limit")
+                    sleep(e.retry_after)
+                    continue
+
+            except TwythonError as e:
                 # catch exceptions and restart
                 self.stop()
+                print("[Twython Exception] \n%s" % e)
                 print("Restarting stream...")
-                sleep(5) # wait
+                sleep(60) # wait
                 continue
 
             else:
