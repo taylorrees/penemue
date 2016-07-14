@@ -1,3 +1,4 @@
 from analysis import statistics
+from pprint import pprint
 
-print(statistics.get())
+pprint(statistics.get())
