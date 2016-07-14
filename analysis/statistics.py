@@ -17,15 +17,15 @@ def get():
     and replies for all users, journalists, organisations and users
     external to the study"""
 
-    # # get & store journalists from twitter lists
-    # j = load(open("journalists.json"))
-    # collect = Collect(lists=j)
-    # collect.store("journalists")
-    #
-    # # get & store news organisations from twitter lists
-    # o = load(open("organisations.json"))
-    # collect = Collect(lists=o, refine=False, append=True)
-    # collect.store("organisations")
+    # get & store journalists from twitter lists
+    j = load(open("journalists.json"))
+    collect = Collect(lists=j)
+    collect.store("journalists")
+
+    # get & store news organisations from twitter lists
+    o = load(open("organisations.json"))
+    collect = Collect(lists=o, refine=False, append=True)
+    collect.store("organisations")
 
     # get sets of id_str's
     journalists = DB.journalists.distinct("id_str")
