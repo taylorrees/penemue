@@ -3,6 +3,7 @@
 ###################
 
 credentials.py
+analysis/*.csv
 
 ###################
 # Python specific
