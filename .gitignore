@@ -1,13 +1,10 @@
-###################
-# Repository specific
-###################
+
+# Repository
 
 credentials.py
 penemue/data/output/*
 
-###################
-# Python specific
-###################
+# Python
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -99,9 +96,7 @@ ENV/
 # Rope project settings
 .ropeproject
 
-###################
 # OSX specific
-###################
 
 *.DS_Store
 .AppleDouble
