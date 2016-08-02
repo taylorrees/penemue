@@ -3,7 +3,7 @@
 ###################
 
 credentials.py
-data/output/*
+penemue/data/output/*
 
 ###################
 # Python specific
