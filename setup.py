@@ -6,14 +6,14 @@ except ImportError:
 config = {
     'description': 'A tool to stream and store the tweets of a select group of users.',
     'author': 'Taylor Rees',
-    'url': 'https://github.com/taylorrees/media-monitor',
-    'download_url': 'https://github.com/taylorrees/media-monitor/archive/master.zip',
+    'url': 'https://github.com/taylorrees/penemue',
+    'download_url': 'https://github.com/taylorrees/penemue/archive/master.zip',
     'author_email': 'hello@taylorre.es',
     'version': '0.1',
     'install_requires': ['twython', 'pymongo', 'matplotlib', 'textblob', 'beautifulsoup4'],
-    'packages': ['media-monitor'],
+    'packages': ['penemue'],
     'scripts': [],
-    'name': 'media-monitor'
+    'name': 'penemue'
 }
 
 setup(**config)
