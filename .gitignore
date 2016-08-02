@@ -3,7 +3,7 @@
 ###################
 
 credentials.py
-data/output/*
+data/output/
 
 ###################
 # Python specific
