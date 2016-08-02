@@ -1,13 +1,14 @@
-from credentials import app_key
-from credentials import app_secret
-from credentials import auth_token
-from credentials import auth_secret
 from twython import TwythonStreamer
 from twython import TwythonError
 from twython import TwythonRateLimitError
 from twython import TwythonAuthError
 from time import sleep
-from db import DB
+
+from .config import db
+from credentials import app_key
+from credentials import app_secret
+from credentials import auth_token
+from credentials import auth_secret
 
 
 class Stream(TwythonStreamer):
@@ -16,7 +17,7 @@ class Stream(TwythonStreamer):
         """Store tweet when received."""
         # extend stream
         # on_success add tweet to db
-        DB.tweets.insert(tweet)
+        db.tweets.insert(tweet)
 
     def on_error(self, status_code, data):
         """Handle streaming error."""
@@ -39,7 +40,7 @@ class MonitorTweets(object):
         """Start the twitter stream."""
 
         # comma separated user ids
-        users = DB.users.find()
+        users = db.users.find()
         users = [user["id_str"] for user in users]
         users = ",".join(users)
 

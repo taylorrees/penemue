@@ -1,13 +1,13 @@
+from twython import Twython
+
+from .limiter import limiter
+from .filter import remove_duplicate_users
+from .filter import refine
+from .config import db
 from credentials import app_key
 from credentials import app_secret
 from credentials import auth_token
 from credentials import auth_secret
-from twython import Twython
-from limiter import limiter
-from .filter import remove_duplicate_users
-from .filter import refine
-from db import DB
-
 
 class Collect(object):
     """Get, merge and filter the members of the provided Twitter lists."""
@@ -64,6 +64,6 @@ class Collect(object):
 
         if not self.append:
             # remove existing users
-            DB.users.remove({})
+            db.users.remove({})
 
-        DB.users.insert_many(self.members)
+        db.users.insert_many(self.members)

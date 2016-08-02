@@ -1,11 +1,12 @@
 from sys import exit
 from time import time
-from collect import Collect
-from monitor import MonitorTweets
-from monitor import MonitorUsers
 from threading import Thread
 from threading import Timer
 from json import load
+
+from utils import Collect
+from utils import MonitorTweets
+from utils import MonitorUsers
 
 if __name__ == "__main__":
 
@@ -20,12 +21,12 @@ if __name__ == "__main__":
         R = seconds(hours=24)  # restart stream every (seconds)
 
         # get journalists from twitter lists
-        journalists = load(open("journalists.json"))
+        journalists = load(open("data/journalists.json"))
         collect = Collect(lists=journalists)
         collect.store()
 
         # get news organisations from twitter lists
-        organisations = load(open("organisations.json"))
+        organisations = load(open("data/organisations.json"))
         collect = Collect(lists=organisations, refine=False, append=True)
         collect.store()
 

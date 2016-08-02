@@ -1,11 +1,11 @@
-from credentials import app_key
-from credentials import app_secret
-from credentials import auth_token
-from credentials import auth_secret
 from twython import Twython
 from time import time
 from time import sleep
 
+from credentials import app_key
+from credentials import app_secret
+from credentials import auth_token
+from credentials import auth_secret
 
 def notify(reset):
     secs = reset - time()
@@ -18,7 +18,7 @@ def limiter(request):
     def decorator(f):
         def wrapper(*args, **kwargs):
             """
-            A decorator function to provide Twitter API rate limiting. 
+            A decorator function to provide Twitter API rate limiting.
 
             A request is made to the API to get the number
             of remaining requests. If no requests remain then the

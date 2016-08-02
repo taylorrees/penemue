@@ -3,8 +3,7 @@
 ###################
 
 credentials.py
-analysis/*.csv
-analysis/data/
+data/output/
 
 ###################
 # Python specific

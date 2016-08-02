@@ -1,24 +1,24 @@
+from twython import Twython
+from time import time
+
+from .config import db
+from .limiter import limiter
 from credentials import app_key
 from credentials import app_secret
 from credentials import auth_token
 from credentials import auth_secret
-from twython import Twython
-from limiter import limiter
-from time import time
-from db import DB
-
 
 class MonitorUsers(object):
 
     def __init__(self):
         cr = [app_key, app_secret, auth_token, auth_secret]
         self.twitter = Twython(*cr)
-        self.users = [user for user in DB.users.find()]
+        self.users = [user for user in db.users.find()]
 
     def __archive(self):
         """Archive all current users."""
         # archive current users
-        DB.archive.insert({
+        db.archive.insert({
             "timestamp": time(),
             "document_type": "users",
             "data": self.users
@@ -27,8 +27,8 @@ class MonitorUsers(object):
     def __store(self):
         """Store the users to the database."""
         # overwite existing users
-        DB.users.remove({})
-        DB.users.insert_many(self.users)
+        db.users.remove({})
+        db.users.insert_many(self.users)
 
     def __collect(self):
         """Make calls to twitter api to collect profiles."""

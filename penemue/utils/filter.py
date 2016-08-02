@@ -1,7 +1,8 @@
 from time import time
 from time import strptime
 from time import mktime
-from db import DB
+
+from .config import db
 
 keywords = [
     "broadcaster",

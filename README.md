@@ -34,5 +34,5 @@ auth_secret = 'your_auth_secret'
 To start monitoring run
 
 ```
-$ python3 start.py
+$ python3 main.py
 ```
