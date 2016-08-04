@@ -1,5 +1,2 @@
 twython
 pymongo
-matplotlib
-textblob
-beautifulsoup4

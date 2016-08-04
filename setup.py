@@ -10,7 +10,7 @@ config = {
     'download_url': 'https://github.com/taylorrees/penemue/archive/master.zip',
     'author_email': 'hello@taylorre.es',
     'version': '0.1',
-    'install_requires': ['twython', 'pymongo', 'matplotlib', 'textblob', 'beautifulsoup4'],
+    'install_requires': ['twython', 'pymongo'],
     'packages': ['penemue'],
     'scripts': [],
     'name': 'penemue'
