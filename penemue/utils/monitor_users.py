@@ -8,11 +8,19 @@ from credentials import app_secret
 from credentials import auth_token
 from credentials import auth_secret
 
+
+@limiter("users/lookup")
+def lookup(user_id):
+    """Twitter api wrapper to enforce rate limit."""
+    # rate limited
+    cr = [app_key, app_secret, auth_token, auth_secret]
+    twitter = Twython(*cr)
+    return twitter.lookup_user(user_id=user_id)
+
+
 class MonitorUsers(object):
 
     def __init__(self):
-        cr = [app_key, app_secret, auth_token, auth_secret]
-        self.twitter = Twython(*cr)
         self.users = [user for user in db.users.find()]
 
     def __archive(self):
@@ -40,13 +48,8 @@ class MonitorUsers(object):
             # take batches of 100 ids
             j = i + 100
             user_id = user_ids[i:j]
-            updated += self.lookup(user_id)
+            updated += lookup(user_id)
 
-    @limiter("users/lookup")
-    def lookup(self, user_id):
-        """Twitter api wrapper to enforce rate limit."""
-        # rate limited
-        return self.twitter.lookup_user(user_id=user_id)
 
     def update(self):
         """Update existing user profiles."""
